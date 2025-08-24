@@ -1,0 +1,345 @@
+<!DOCTYPE html>  <html lang="id">  
+<head>  
+<meta charset="UTF-8" />  
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+<title>⚠️ System Locked - Ransomware</title>  
+<style>  
+  :root{  
+    --bg1:#0b0f14;  
+    --bg2:#111827;  
+    --accent:#ff0033;  
+    --accent2:#ffd000;  
+    --text:#e5e7eb;  
+    --muted:#9ca3af;  
+  }  
+  *{box-sizing:border-box}  
+  html,body{  
+    height:100%;  
+    margin:0;  
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;  
+    background: radial-gradient(1200px 700px at 50% -10%, #1f2937 0%, var(--bg1) 40%, #000 100%);  
+    color:var(--text);  
+    overflow:hidden;  
+  }  /* Kedip-kedip layar */
+.alarm {
+animation: alarm 1.0s linear infinite;
+}
+@keyframes alarm {
+0%, 93%, 100% { box-shadow: inset 0 0 0 9999px rgba(255,0,0,0); }
+94%, 96% { box-shadow: inset 0 0 0 9999px rgba(255,0,0,0.06); }
+97%, 99% { box-shadow: inset 0 0 0 9999px rgba(255,0,0,0.1); }
+}
+
+/* Garis scan */
+.scanline {
+position:fixed; inset:0;
+background: repeating-linear-gradient(
+to bottom,
+rgba(255,255,255,0.03) 0px,
+rgba(255,255,255,0.03) 1px,
+transparent 2px,
+transparent 4px
+);
+mix-blend-mode: overlay;
+pointer-events:none;
+animation: scan 6s linear infinite;
+}
+@keyframes scan {
+0% { background-position-y: 0px; }
+100% { background-position-y: 200px; }
+}
+
+/* Container utama */
+.wrap{
+height:100%;
+display:grid;
+grid-template-rows: auto 1fr auto;
+gap:18px;
+padding:28px 24px;
+backdrop-filter: blur(2px) saturate(105%);
+}
+
+/* Header */
+.topbar{
+display:flex; align-items:center; justify-content:space-between;
+border:1px solid rgba(255,255,255,0.08);
+background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+padding:14px 16px; border-radius:16px;
+}
+.title{
+display:flex; align-items:center; gap:12px; letter-spacing:0.5px;
+}
+.dot {
+width:12px; height:12px; border-radius:50%;
+background: var(--accent);
+box-shadow:0 0 20px var(--accent);
+animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{
+0%,100%{ transform: scale(1); opacity:1;}
+50%{ transform: scale(1.2); opacity:.6;}
+}
+.title h1{ margin:0; font-size:clamp(16px, 2.4vw, 20px); }
+.subtle{ color:var(--muted); font-size:12px }
+
+/* Grid konten /
+.grid{
+display:grid;
+grid-template-columns: 1.2fr 1fr;
+gap:18px;
+min-height:0; / allow children to scroll */
+}
+@media (max-width: 880px){
+.grid{ grid-template-columns: 1fr; }
+}
+
+/* Panel */
+.card{
+border:1px solid rgba(255,255,255,0.07);
+background:linear-gradient(180deg, rgba(15,23,42,0.7), rgba(2,6,23,0.6));
+border-radius:18px; padding:16px; min-height:0;
+box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+.card h3{ margin:0 0 10px; font-size:14px; color:#cbd5e1; letter-spacing:.6px; }
+
+/* Terminal file list */
+.terminal{
+height:100%;
+overflow:auto;
+padding:12px;
+background: rgba(0,0,0,0.35);
+border-radius:12px;
+border:1px solid rgba(255,255,255,0.06);
+line-height:1.4;
+scrollbar-width: thin;
+}
+.row{
+display:flex; gap:10px; align-items:center;
+font-size:13px;
+}
+.row .tag{
+font-size:11px;
+padding:2px 6px; border-radius:999px;
+border:1px solid rgba(255,255,255,0.12);
+color:#fca5a5; flex:0 0 auto;
+}
+.row .path{ color:#93c5fd; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.row .state{ margin-left:auto; color:#a7f3d0; }
+
+/* Progress + countdown */
+.progress{
+margin-top:10px;
+height:12px; border-radius:999px;
+background: rgba(255,255,255,0.08);
+overflow:hidden;
+border:1px solid rgba(255,255,255,0.12);
+}
+.bar{
+height:100%; width:0%;
+background: linear-gradient(90deg, var(--accent), var(--accent2));
+box-shadow: 0 0 20px rgba(255,0,80,.4);
+transition: width .2s linear;
+}
+.stats{
+display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:#cbd5e1;
+}
+
+/* Warning box */
+.warning{
+display:flex; flex-direction:column; gap:10px;
+border:1px dashed rgba(255,255,255,0.18);
+border-radius:14px; padding:14px;
+background: rgba(255,0,0,0.05);
+}
+.blink{
+animation: blink 1s steps(2,end) infinite;
+color: var(--accent);
+text-shadow: 0 0 10px rgba(255,0,0,0.6);
+}
+@keyframes blink{ 0%{opacity:1} 50%{opacity:.15} 100%{opacity:1}}
+
+/* Tombol unlock */
+.actions{
+display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;
+}
+button{
+appearance:none; border:none; cursor:pointer;
+padding:10px 14px; border-radius:12px; font-weight:700; letter-spacing:.4px;
+background:linear-gradient(180deg, #16a34a, #15803d);
+color:white; box-shadow: 0 10px 18px rgba(22,163,74,0.25);
+transition: transform .06s ease, filter .2s ease;
+}
+button:active{ transform: translateY(1px) scale(.99); }
+
+.ghost{
+background: transparent;
+border:1px solid rgba(255,255,255,0.18);
+color:#e5e7eb;
+box-shadow:none;
+}
+
+/* Modal "PRANK" */
+.modal{
+position:fixed; inset:0; display:none; place-items:center;
+background: rgba(0,0,0,0.6);
+z-index: 50;
+}
+.modal .box{
+width:min(560px, 92vw);
+background: linear-gradient(180deg, rgba(17,24,39,.96), rgba(2,6,23,.94));
+border:1px solid rgba(255,255,255,.12);
+border-radius:20px; padding:22px;
+text-align:center;
+box-shadow: 0 40px 80px rgba(0,0,0,.5);
+}
+.badge{
+display:inline-block; padding:6px 10px; border-radius:999px;
+border:1px solid rgba(255,255,255,0.2); color:#a7f3d0; font-size:12px; margin-bottom:10px;
+}
+.box h2{ margin:6px 0 6px; }
+.note{ color:#cbd5e1; font-size:14px; }
+
+/* Footer */
+footer{
+display:flex; align-items:center; justify-content:space-between; gap:12px;
+font-size:12px; color:#94a3b8;
+}
+</style>
+
+</head>  
+<body class="alarm">  
+  <div class="scanline"></div>  
+  <div class="wrap">  
+    <div class="topbar">  
+      <div class="title">  
+        <div class="dot" aria-hidden="true"></div>  
+        <h1>System Security Alert</h1>  
+      </div>  
+      <div class="subtle">Session ID: <span id="sid"></span></div>  
+    </div>  <div class="grid">  
+  <!-- Kiri: Terminal palsu -->  
+  <section class="card">  
+    <h3>Activity Log</h3>  
+    <div id="terminal" class="terminal" aria-live="polite" aria-atomic="false"></div>  
+  </section>  
+
+  <!-- Kanan: Status / Timer -->  
+  <section class="card">  
+    <h3>Status</h3>  
+    <div class="warning">  
+      <div><strong class="blink">WARNING:</strong> ransomware by thoz.</div>  
+      <div class="subtle">Transfer dana ini:088287480774 kalo tidak hp lu akan terkena ransomware selamanya.</div>  
+    </div>  
+
+    <div class="stats">  
+      <div>Progress: <strong id="ptext">0%</strong></div>  
+      <div>Time left: <strong id="timer">--:--</strong></div>  
+    </div>  
+    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">  
+      <div id="bar" class="bar"></div>  
+    </div>  
+
+    <div class="actions">  
+      <div class="bottom-text">
+      Benar passwords <a href="#">klik</a>
+      <input type="text" id="passwords" placeholder="passwords" required>
+      <button class="ghost" id="moreTime">+10s</button>  
+      <button class="ghost" id="lessTime">-10s</button>  
+    </div>  
+  </section>  
+</div>  
+
+<footer>  
+  <div>© Ransomware Screen — harmless demo UI</div>  
+  <div>Tip: Bayar Dulu  <code>?t=50k</code></div>  
+</footer>
+
+  </div>    <!-- Modal pengungkapan prank -->    <div id="modal" class="modal" role="dialog" aria-modal="true">  
+    <div class="box">  
+      <span class="badge">RANSOMWARE THOZ STORE</span>  
+      <h2>Tenang. Ini cuma PRANK yang aman. 😄</h2>  
+      <p class="note">  
+        Halaman ini hanya menampilkan animasi dan teks. Tidak ada enkripsi atau akses file sungguhan.  
+        Gunakan dengan etika dan izin orang yang melihat, ya.  
+      </p>  
+      <div class="actions" style="justify-content:center; margin-top:16px">  
+        <button id="ok">Oke, paham</button>  
+      </div>  
+    </div>  
+  </div>  <script>  
+      const form = document.getElementById("loginForm");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const user = document.getElementById("passwords").value;
+      
+      if (user === "thozstore") {
+        alert("Login berhasil! Selamat datang " + user);
+        // Bisa diarahkan ke halaman home
+        window.location.href = "home.html";
+      } else {
+        alert("Username atau Password salah!");
+      }
+  // ================== UTIL ==================  
+  const qs = new URLSearchParams(location.search);  
+  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));  
+  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;  
+  
+  // SID acak  
+  document.getElementById('sid').textContent =  
+    Math.random().toString(16).slice(2,10).toUpperCase() + "-" +  
+    Math.random().toString(16).slice(2,6).toUpperCase();  
+  
+  // Durasi timer (detik) dari query ?t=, default 300 dtk  
+  let total = parseInt(qs.get('t') || '300', 10);  
+  total = clamp(isNaN(total) ? 300 : total, 10, 3600);  
+  let remaining = total;  
+  
+  // Progress  
+  let progress = 0;  
+  const bar = document.getElementById('bar');  
+  const ptext = document.getElementById('ptext');  
+  const timerEl = document.getElementById('timer');  
+  const terminal = document.getElementById('terminal');  
+  
+  // Dummy daftar "file"  
+  const extensions = ['.jpg','.png','.mp4','.pdf','.docx','.xlsx','.zip','.pptx','.txt'];  
+  const roots = ['C:/Users/Public','C:/Windows/Temp','D:/Downloads','/home/user','/var/log','/media/usb'];  
+  const names = ['invoice','family','holiday','backup','project','notes','passwords','camera','meeting','report','data','private','music','photo','video'];  
+  function fakePath(){  
+    const dir = roots[rand(0, roots.length-1)];  
+    const nm = names[rand(0, names.length-1)] + "_" + rand(100,9999);  
+    const ext = extensions[rand(0, extensions.length-1)];  
+    return `${dir}/${nm}${ext}`;  
+  }  
+  
+  function addRow(path, ok=true){  
+    const div = document.createElement('div');  
+    div.className='row';  
+    const tag = document.createElement('span'); tag.className='tag'; tag.textContent = ok ? 'LOCK' : 'SKIP';  
+    const sp = document.createElement('span'); sp.className='path'; sp.textContent = path;  
+    const st = document.createElement('span'); st.className='state'; st.textContent = ok ? '✓ processed' : '• queued';  
+    div.append(tag, sp, st);  
+    terminal.appendChild(div);  
+    terminal.scrollTop = terminal.scrollHeight;  
+  }  
+  
+  // Tampilkan modal "PRANK" saat tombol ditekan  
+  const modal = document.getElementById('modal');  
+  document.getElementById('unlock').addEventListener('click', () => {  
+    modal.style.display='grid';  
+  });  
+  document.getElementById('ok').addEventListener('click', () => {  
+    modal.style.display='none';  
+    document.body.classList.remove('alarm'); // hentikan kedip  
+  });  
+  
+  // Kontrol waktu  
+  document.getElementById('moreTime').addEventListener('click', ()=>{  
+    remaining = clamp(remaining + 60, 0, 7200);  
+    total = clamp(total + 60, 0, 7200);  
+    tick(true);  
+  });  
+  document.getElementById('lessTime').addEventListener('click', ()=>{  
+      </script>
+</body>
+</html>

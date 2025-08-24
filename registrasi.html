@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrasi Animasi</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+      background-size: 400% 400%;
+      animation: gradient 10s ease infinite;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .register-box {
+      width: 380px;
+      padding: 40px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      animation: fadeIn 1.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .register-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .input-box {
+      margin-bottom: 20px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 12px 15px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .input-box input::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #a18cd1;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #ff9a9e;
+      transform: scale(1.05);
+    }
+
+    .bottom-text {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .bottom-text a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .bottom-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <h2>Registrasi</h2>
+    <form id="registerForm">
+      <div class="input-box">
+        <input type="text" id="newUser" placeholder="Username" required>
+      </div>
+      <div class="input-box">
+        <input type="password" id="newPass" placeholder="Password" required>
+      </div>
+      <div class="input-box">
+        <input type="password" id="confirmPass" placeholder="Konfirmasi Password" required>
+      </div>
+      <button type="submit" class="btn">Daftar</button>
+    </form>
+    <div class="bottom-text">
+      Sudah punya akun? <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("registerForm");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const user = document.getElementById("newUser").value;
+      const pass = document.getElementById("newPass").value;
+      const confirm = document.getElementById("confirmPass").value;
+
+      if (pass !== confirm) {
+        alert("Password dan Konfirmasi tidak sama!");
+        return;
+      }
+
+      // Simulasi registrasi berhasil
+      alert("Registrasi berhasil! Silakan login dengan akun Anda.");
+      window.location.href = "login.html"; // balik ke login
+    });
+  </script>
+</body>
+</html>
